@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+html,
+body,
+#root{
+  width:100%;
+  min-height:100vh;
+}
+
+body{
+  margin:0;
+  background:#F8FAFC;
+  font-family:Inter,sans-serif;
+}
+
+.glass{
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.3);
+}
+
+.gradient-text{
+  background:linear-gradient(
+    135deg,
+    #2563EB,
+    #14B8A6
+  );
+
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.hero-bg{
+  background:
+  radial-gradient(
+    circle at top left,
+    rgba(37,99,235,.2),
+    transparent
+  ),
+  radial-gradient(
+    circle at bottom right,
+    rgba(20,184,166,.2),
+    transparent
+  );
+}
