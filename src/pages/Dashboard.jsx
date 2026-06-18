@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
 
@@ -141,30 +142,77 @@ function Dashboard() {
 
         <div className="grid md:grid-cols-4 gap-6">
 
-          {[
-            "Book Service",
-            "Track Helper",
-            "Payments",
-            "History"
-          ].map((item) => (
+          <div className="grid md:grid-cols-4 gap-6">
 
-            <motion.div
-              key={item}
-              whileHover={{ y: -8 }}
-              className="
-              bg-white
-              rounded-3xl
-              p-8
-              shadow-lg
-              cursor-pointer
-              "
-            >
-              <h3 className="font-semibold text-lg">
-                {item}
-              </h3>
-            </motion.div>
+  <Link to="/booking" className="block">
+    <motion.div
+      whileHover={{ y: -8 }}
+      className="
+      bg-white
+      rounded-3xl
+      p-8
+      shadow-lg
+      cursor-pointer
+      "
+    >
+      <h3 className="font-semibold text-lg">
+        Book Service
+      </h3>
+    </motion.div>
+  </Link>
 
-          ))}
+  <Link to="/booking" className="block">
+    <motion.div
+      whileHover={{ y: -8 }}
+      className="
+      bg-white
+      rounded-3xl
+      p-8
+      shadow-lg
+      cursor-pointer
+      "
+    >
+      <h3 className="font-semibold text-lg">
+        Track Helper
+      </h3>
+    </motion.div>
+  </Link>
+
+  <Link to="/payment" className="block">
+    <motion.div
+      whileHover={{ y: -8 }}
+      className="
+      bg-white
+      rounded-3xl
+      p-8
+      shadow-lg
+      cursor-pointer
+      "
+    >
+      <h3 className="font-semibold text-lg">
+        Payments
+      </h3>
+    </motion.div>
+  </Link>
+
+  <Link to="/history" className="block">
+    <motion.div
+      whileHover={{ y: -8 }}
+      className="
+      bg-white
+      rounded-3xl
+      p-8
+      shadow-lg
+      cursor-pointer
+      "
+    >
+      <h3 className="font-semibold text-lg">
+        History
+      </h3>
+    </motion.div>
+  </Link>
+
+</div>
 
         </div>
 
