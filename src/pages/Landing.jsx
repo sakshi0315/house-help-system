@@ -3,6 +3,7 @@ import Footer from "../components/layout/Footer";
 import Button from "../components/common/Button";
 
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function Landing() {
  return (
@@ -70,9 +71,11 @@ function Landing() {
        gap-4
        mt-8"
       >
-       <Button>
-        Book Service
-       </Button>
+       <Link to="/booking">
+        <Button>
+          Book Service
+        </Button>
+      </Link>
 
        <button
         className="
