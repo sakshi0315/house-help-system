@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import api from "../api/api";
+import { useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -12,6 +14,61 @@ function Auth() {
 
   const [isLogin,setIsLogin] = useState(true);
   const [showPassword,setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+      name: "",
+      email: "",
+      phone: "",
+      password: ""
+    });
+
+    const handleChange = (e) => {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value
+      });
+    };
+
+    const handleSubmit = async () => {
+      console.log("Button Clicked");
+  try {
+
+    if (!isLogin) {
+
+      const response = await api.post(
+        "/auth/register",
+        formData
+      );
+
+      alert(response.data.message);
+
+      setIsLogin(true);
+
+    } else {
+
+      const response = await api.post(
+        "/auth/login",
+        {
+          email: formData.email,
+          password: formData.password
+        }
+      );
+
+      alert(response.data.message);
+
+      navigate("/dashboard");
+    }
+
+  } catch (error) {
+
+    alert(
+      error.response?.data?.message ||
+      "Something went wrong"
+    );
+
+  }
+};
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -159,9 +216,32 @@ function Auth() {
                 p-4
                 rounded-2xl
                 border"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
               />
 
             </div>
+          }
+
+          {
+        !isLogin &&
+        <div className="mb-4 relative">
+
+          <input
+            type="text"
+            placeholder="Phone Number"
+            className="
+            w-full
+            p-4
+            rounded-2xl
+            border"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+
+        </div>
           }
 
           {/* Email */}
@@ -186,6 +266,9 @@ function Auth() {
               p-4
               rounded-2xl
               border"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
             />
 
           </div>
@@ -217,6 +300,10 @@ function Auth() {
               p-4
               rounded-2xl
               border"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+
             />
 
             <button
@@ -258,21 +345,18 @@ function Auth() {
 
           {/* Submit */}
 
-          <button
-            className="
-            w-full
-            py-4
-            rounded-2xl
-            bg-blue-600
-            text-white
-            font-semibold
-            shadow-lg"
-          >
-            {
-              isLogin
-              ? "Login"
-              : "Create Account"
-            }
+            <button
+              onClick={handleSubmit}
+              className="
+              w-full
+              py-4
+              rounded-2xl
+              bg-blue-600
+              text-white
+              font-semibold
+              shadow-lg"
+            >
+            {isLogin ? "Login" : "Create Account"}
           </button>
 
           {/* Divider */}

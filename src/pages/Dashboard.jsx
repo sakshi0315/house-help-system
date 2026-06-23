@@ -132,92 +132,119 @@ function Dashboard() {
 
       </div>
 
-      {/* Quick Actions */}
+{/* Quick Actions */}
 
-      <div className="max-w-7xl mx-auto px-6">
+<div className="max-w-7xl mx-auto px-6">
 
-        <h2 className="text-2xl font-bold mb-6">
-          Quick Actions
-        </h2>
+  <h2 className="text-2xl font-bold mb-6">
+    Quick Actions
+  </h2>
 
-        <div className="grid md:grid-cols-4 gap-6">
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
 
-          <div className="grid md:grid-cols-4 gap-6">
+    <Link to="/booking" className="block">
+      <motion.div
+        whileHover={{ y: -8 }}
+        className="
+        w-full
+        min-h-[160px]
+        bg-white
+        rounded-3xl
+        shadow-lg
+        flex
+        flex-col
+        items-center
+        justify-center
+        text-center
+        hover:shadow-2xl
+        transition-all
+        "
+      >
+        <div className="text-5xl mb-3">📅</div>
+        <h3 className="font-semibold text-lg">
+          Book Service
+        </h3>
+      </motion.div>
+    </Link>
 
-  <Link to="/booking" className="block">
-    <motion.div
-      whileHover={{ y: -8 }}
-      className="
-      bg-white
-      rounded-3xl
-      p-8
-      shadow-lg
-      cursor-pointer
-      "
-    >
-      <h3 className="font-semibold text-lg">
-        Book Service
-      </h3>
-    </motion.div>
-  </Link>
+    <Link to="/tracking" className="block">
+      <motion.div
+        whileHover={{ y: -8 }}
+        className="
+        w-full
+        min-h-[160px]
+        bg-white
+        rounded-3xl
+        shadow-lg
+        flex
+        flex-col
+        items-center
+        justify-center
+        text-center
+        hover:shadow-2xl
+        transition-all
+        "
+      >
+        <div className="text-5xl mb-3">📍</div>
+        <h3 className="font-semibold text-lg">
+          Track Helper
+        </h3>
+      </motion.div>
+    </Link>
 
-  <Link to="/booking" className="block">
-    <motion.div
-      whileHover={{ y: -8 }}
-      className="
-      bg-white
-      rounded-3xl
-      p-8
-      shadow-lg
-      cursor-pointer
-      "
-    >
-      <h3 className="font-semibold text-lg">
-        Track Helper
-      </h3>
-    </motion.div>
-  </Link>
+    <Link to="/payment" className="block">
+      <motion.div
+        whileHover={{ y: -8 }}
+        className="
+        w-full
+        min-h-[160px]
+        bg-white
+        rounded-3xl
+        shadow-lg
+        flex
+        flex-col
+        items-center
+        justify-center
+        text-center
+        hover:shadow-2xl
+        transition-all
+        "
+      >
+        <div className="text-5xl mb-3">💳</div>
+        <h3 className="font-semibold text-lg">
+          Payments
+        </h3>
+      </motion.div>
+    </Link>
 
-  <Link to="/payment" className="block">
-    <motion.div
-      whileHover={{ y: -8 }}
-      className="
-      bg-white
-      rounded-3xl
-      p-8
-      shadow-lg
-      cursor-pointer
-      "
-    >
-      <h3 className="font-semibold text-lg">
-        Payments
-      </h3>
-    </motion.div>
-  </Link>
+    <Link to="/history" className="block">
+      <motion.div
+        whileHover={{ y: -8 }}
+        className="
+        w-full
+        min-h-[160px]
+        bg-white
+        rounded-3xl
+        shadow-lg
+        flex
+        flex-col
+        items-center
+        justify-center
+        text-center
+        hover:shadow-2xl
+        transition-all
+        "
+      >
+        <div className="text-5xl mb-3">📜</div>
+        <h3 className="font-semibold text-lg">
+          History
+        </h3>
+      </motion.div>
+    </Link>
 
-  <Link to="/history" className="block">
-    <motion.div
-      whileHover={{ y: -8 }}
-      className="
-      bg-white
-      rounded-3xl
-      p-8
-      shadow-lg
-      cursor-pointer
-      "
-    >
-      <h3 className="font-semibold text-lg">
-        History
-      </h3>
-    </motion.div>
-  </Link>
+  </div>
 
 </div>
-
-        </div>
-
-      </div>
-
       {/* Services */}
 
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -226,7 +253,7 @@ function Dashboard() {
           Service Categories
         </h2>
 
-        <div className="grid md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
 
           {services.map((service) => (
 
