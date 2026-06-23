@@ -1,5 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import DashboardHelper from "../pages/helper/dashboard_helper";
+import RequestsHelper from "../pages/helper/requests_helper";
+import ActiveJobsHelper from "../pages/helper/activeJobs_helper";
+import EarningsHelper from "../pages/helper/earning_helper";
+import ReviewsHelper from "../pages/helper/reviews_helper";
+import ProfileHelper from "../pages/helper/profile_helper";
+import NotificationsHelper from "../pages/helper/notifications_helper";
+
 import Landing from "../pages/Landing";
 import Auth from "../pages/Auth";
 import Dashboard from "../pages/Dashboard";
@@ -74,6 +82,44 @@ function AppRoutes() {
       path="/history"
       element={<BookingHistory />}
     />
+
+
+{/* Helper Dashboard */}
+<Route
+  path="/helper/dashboard_helper"
+  element={<DashboardHelper />}
+/>
+
+<Route
+  path="/helper/requests_helper"
+  element={<RequestsHelper />}
+/>
+
+<Route
+  path="/helper/activeJobs_helper"
+  element={<ActiveJobsHelper />}
+/>
+
+<Route
+  path="/helper/earning_helper"
+  element={<EarningsHelper />}
+/>
+
+<Route
+  path="/helper/reviews_helper"
+  element={<ReviewsHelper />}
+/>
+
+<Route
+  path="/helper/profile_helper"
+  element={<ProfileHelper />}
+/>
+
+<Route
+  path="/helper/notifications_helper"
+  element={<NotificationsHelper />}
+/>
+
 
       </Routes>
     </BrowserRouter>
