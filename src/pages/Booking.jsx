@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 function Booking() {
+  const [selectedTime, setSelectedTime] = useState("");
   const [service, setService] = useState("Cleaning");
 
   const services = [
@@ -111,28 +112,35 @@ function Booking() {
 
             {/* Time Slot */}
 
-            <h2 className="font-semibold text-xl mb-4">
-              Time Slot
-            </h2>
+            {<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
 
-            <div className="grid md:grid-cols-3 gap-4 mb-6">
+                {timeSlots.map((time) => (
 
-              {timeSlots.map((slot) => (
-                <motion.button
-                  key={slot}
-                  whileHover={{ scale: 1.03 }}
-                  className="
-                  border
-                  rounded-2xl
-                  p-4
-                  font-medium
-                  "
-                >
-                  {slot}
-                </motion.button>
-              ))}
+                  <button
+                    key={time}
+                    onClick={() => setSelectedTime(time)}
+                    className={`
+                    rounded-3xl
+                    py-6
+                    border-2
+                    font-medium
+                    transition-all
+                    duration-300
 
-            </div>
+                    ${
+                      selectedTime === time
+                        ? "bg-blue-600 text-white border-blue-600 shadow-lg scale-105"
+                        : "bg-white hover:border-blue-400"
+                    }
+                    `}
+                  >
+                    {time}
+                  </button>
+
+                ))}
+
+              </div>
+            }
 
             {/* Instructions */}
 
