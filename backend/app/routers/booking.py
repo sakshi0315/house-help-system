@@ -1,104 +1,159 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
-from app.dependencies import get_db
-from app.models.booking import Booking
-from app.schemas.booking import BookingCreate
-import heapq
-
 from app.models.helper import Helper
-from app.schemas.booking import AutoBooking
+from app.models.payment import Payment
+from app.database import SessionLocal
+from app.models.booking import Booking
+from app.models.helper import Helper
+from app.schemas.booking import BookingCreate
 
 router = APIRouter(
-    prefix="/bookings",
-    tags=["Bookings"]
+    prefix="/booking",
+    tags=["Booking"]
 )
 
-@router.post("/")
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+# ===========================
+# Create Booking
+# ===========================
+
+@router.post("/create")
 def create_booking(
     booking: BookingCreate,
     db: Session = Depends(get_db)
 ):
+
+    helper = (
+        db.query(Helper)
+        .filter(
+            Helper.id == booking.helper_id
+        )
+        .first()
+    )
+
+    if helper is None:
+        return {
+            "message": "Helper not found"
+        }
+
+    if helper.available is False:
+        return {
+            "message": "Helper is already busy"
+        }
+
     new_booking = Booking(
         user_id=booking.user_id,
         helper_id=booking.helper_id,
         service=booking.service,
         date=booking.date,
         time=booking.time,
+        address=booking.address,
+        instructions=booking.instructions,
         status="Pending"
     )
 
     db.add(new_booking)
+
+    helper.available = False
+
     db.commit()
+
     db.refresh(new_booking)
 
     return {
         "message": "Booking Created Successfully",
-        "booking_id": new_booking.id
+        "booking": new_booking
     }
 
-@router.get("/")
-def get_bookings(
+
+# ===========================
+# Booking History
+# ===========================
+
+@router.get("/user/{user_id}")
+def get_user_bookings(
+    user_id: int,
     db: Session = Depends(get_db)
 ):
-    bookings = db.query(Booking).all()
+
+    bookings = (
+        db.query(Booking)
+        .filter(Booking.user_id == user_id)
+        .order_by(Booking.id.desc())
+        .all()
+    )
 
     return bookings
 
-@router.post("/auto-book")
-def auto_book(
-    booking: AutoBooking,
+@router.get("/{booking_id}")
+def get_booking(
+    booking_id: int,
     db: Session = Depends(get_db)
 ):
-    helpers = db.query(Helper).filter(
-        Helper.skill == booking.service,
-        Helper.available == True
-    ).all()
 
-    if not helpers:
-        return {
-            "message": "No Helper Available"
-        }
-
-    pq = []
-
-    for helper in helpers:
-        heapq.heappush(
-            pq,
-            (
-                -helper.rating,
-                helper.cost,
-                helper.id
-            )
-        )
-
-    best = heapq.heappop(pq)
-
-    helper_id = best[2]
-
-    selected_helper = db.query(Helper).filter(
-        Helper.id == helper_id
-    ).first()
-
-    new_booking = Booking(
-        user_id=booking.user_id,
-        helper_id=helper_id,
-        service=booking.service,
-        date=booking.date,
-        time=booking.time,
-        status="Confirmed"
+    booking = (
+        db.query(Booking)
+        .filter(Booking.id == booking_id)
+        .first()
     )
 
-    selected_helper.available = False
+    if booking is None:
+        return {
+            "message": "Booking Not Found"
+        }
 
-    db.add(new_booking)
-    db.commit()
-    db.refresh(new_booking)
+    helper = (
+        db.query(Helper)
+        .filter(Helper.id == booking.helper_id)
+        .first()
+    )
+
+    payment = (
+        db.query(Payment)
+        .filter(Payment.booking_id == booking.id)
+        .first()
+    )
 
     return {
-        "message": "Booking Confirmed",
-        "booking_id": new_booking.id,
-        "helper_name": selected_helper.name,
-        "rating": selected_helper.rating,
-        "cost": selected_helper.cost
+
+        "id": booking.id,
+
+        "service": booking.service,
+
+        "date": booking.date,
+
+        "time": booking.time,
+
+        "address": booking.address,
+
+        "status": booking.status,
+
+        "helper": {
+
+            "name": helper.name,
+
+            "rating": helper.rating,
+
+            "cost": helper.cost,
+
+        } if helper else None,
+
+        "payment": {
+
+            "method": payment.payment_method,
+
+            "status": payment.payment_status,
+
+            "transaction_id": payment.transaction_id,
+
+        } if payment else None,
+
     }

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getHelpersBySkill, createBooking } from "../api/api";
 import { motion } from "framer-motion";
 import {
   MapPin,
@@ -11,7 +13,14 @@ import {
 function Booking() {
   const [selectedTime, setSelectedTime] = useState("");
   const [service, setService] = useState("Cleaning");
+  const [helpers, setHelpers] = useState([]);
+const [selectedHelper, setSelectedHelper] = useState(null);
 
+const [address, setAddress] = useState("");
+const [date, setDate] = useState("");
+const [instructions, setInstructions] = useState("");
+const navigate = useNavigate();
+const [loading, setLoading] = useState(false);
   const services = [
     "Cleaning",
     "Cooking",
@@ -31,6 +40,82 @@ function Booking() {
     "02:00 PM",
     "04:00 PM",
   ];
+
+  useEffect(() => {
+    fetchHelpers();
+}, [service]);
+
+const fetchHelpers = async () => {
+
+    try {
+
+        setLoading(true);
+
+        const response = await getHelpersBySkill(service);
+
+        setHelpers(response.data);
+
+    } catch (error) {
+
+        console.log(error);
+
+    } finally {
+
+        setLoading(false);
+
+    }
+
+};
+
+const handleBooking = async () => {
+
+    console.log("Booking Clicked");
+
+    try {
+
+        const bookingData = {
+            user_id: 1,
+            helper_id: selectedHelper.id,
+            service,
+            date,
+            time: selectedTime,
+            address,
+            instructions
+        };
+
+        console.log(bookingData);
+
+        const response = await createBooking(bookingData);
+
+        console.log(response);
+
+                  // Save Booking ID
+          localStorage.setItem(
+              "booking_id",
+              response.data.booking.id
+          );
+
+          // Save Total Amount
+          localStorage.setItem(
+              "amount",
+              selectedHelper.cost + 49
+          );
+
+          // Navigate to Payment Page
+          navigate("/payment");
+
+    } catch (error) {
+
+        console.log(error);
+
+        console.log(error.response);
+
+        console.log(error.response?.data);
+
+        alert("Booking Failed");
+
+    }
+};
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -85,6 +170,8 @@ function Booking() {
                 rounded-2xl
                 border
                 "
+                value={address}
+                onChange={(e)=>setAddress(e.target.value)}
               />
             </div>
 
@@ -107,6 +194,8 @@ function Booking() {
                 rounded-2xl
                 border
                 "
+                value={date}
+                onChange={(e)=>setDate(e.target.value)}
               />
             </div>
 
@@ -142,6 +231,98 @@ function Booking() {
               </div>
             }
 
+
+            <h2 className="font-semibold text-xl mt-8 mb-4">
+            Available Helpers
+            </h2>
+
+            {
+            loading ?
+
+            <div className="text-gray-500">
+            Loading helpers...
+            </div>
+
+            :
+
+            <div className="grid md:grid-cols-2 gap-4">
+
+            {helpers.map((helper)=>(
+
+            <div
+            key={helper.id}
+            className={`
+            border-2
+            rounded-2xl
+            p-5
+            transition
+
+            ${selectedHelper?.id===helper.id
+            ?
+            "border-blue-600 shadow-lg"
+            :
+            "border-gray-200"}
+            `}
+            >
+
+            <h3 className="text-xl font-bold">
+            {helper.name}
+            </h3>
+
+            <p className="text-gray-500">
+            {helper.skill}
+            </p>
+
+            <div className="mt-2">
+            ⭐ {helper.rating}
+            </div>
+
+            <div className="font-semibold mt-1">
+            ₹{helper.cost}
+            </div>
+
+            <div className="mt-2">
+
+            {helper.available ?
+
+            <span className="text-green-600">
+            Available
+            </span>
+
+            :
+
+            <span className="text-red-600">
+            Busy
+            </span>
+
+            }
+
+            </div>
+
+            <button
+            onClick={()=>setSelectedHelper(helper)}
+            className="
+            mt-4
+            w-full
+            bg-blue-600
+            text-white
+            py-2
+            rounded-xl
+            "
+            >
+
+            Select Helper
+
+            </button>
+
+            </div>
+
+            ))}
+
+            </div>
+
+            }
+
             {/* Instructions */}
 
             <h2 className="font-semibold text-xl mb-4">
@@ -154,17 +335,19 @@ function Booking() {
                 className="absolute left-4 top-4 text-gray-400"
               />
 
-              <textarea
-                rows="5"
-                placeholder="Any special requirements..."
-                className="
-                w-full
-                pl-12
-                p-4
-                rounded-2xl
-                border
-                "
-              />
+            <textarea
+              rows="5"
+              placeholder="Any special requirements..."
+              className="
+              w-full
+              pl-12
+              p-4
+              rounded-2xl
+              border
+              "
+              value={instructions}
+              onChange={(e)=>setInstructions(e.target.value)}
+            />
 
             </div>
 
@@ -195,8 +378,44 @@ function Booking() {
               </div>
 
               <div className="flex justify-between">
+
+              <span>Helper</span>
+
+              <span>
+
+              {selectedHelper
+              ?
+              selectedHelper.name
+              :
+              "Not Selected"}
+
+              </span>
+
+              </div>
+
+              <div className="flex justify-between">
+
+              <span>Rating</span>
+
+              <span>
+
+              {selectedHelper
+              ?
+              `⭐ ${selectedHelper.rating}`
+              :
+              "--"}
+
+              </span>
+
+              </div>
+
+              <div className="flex justify-between">
                 <span>Base Price</span>
-                <span>₹499</span>
+                <span>
+
+                ₹{selectedHelper ? selectedHelper.cost : 0}
+
+                </span>
               </div>
 
               <div className="flex justify-between">
@@ -212,7 +431,7 @@ function Booking() {
 
                 <span className="flex items-center gap-1">
                   <IndianRupee size={18}/>
-                  548
+                  {selectedHelper ? selectedHelper.cost + 49 : 49}
                 </span>
 
               </div>
@@ -220,19 +439,20 @@ function Booking() {
             </div>
 
             <button
-              className="
-              mt-8
-              w-full
-              py-4
-              rounded-2xl
-              bg-blue-600
-              text-white
-              font-semibold
-              shadow-lg
-              "
-            >
-              Confirm Booking
-            </button>
+          onClick={handleBooking}
+          className="
+          mt-8
+          w-full
+          py-4
+          rounded-2xl
+          bg-blue-600
+          text-white
+          font-semibold
+          shadow-lg
+          "
+          >
+          Confirm Booking
+          </button>
 
           </motion.div>
 

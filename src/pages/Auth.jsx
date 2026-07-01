@@ -51,11 +51,18 @@ function Auth() {
         "/auth/login",
         {
           email: formData.email,
-          password: formData.password
+          password: formData.password,
         }
       );
 
       alert(response.data.message);
+
+      const user = response.data.user;
+
+      localStorage.setItem("user_id", user.id);
+      localStorage.setItem("user_name", user.name);
+      localStorage.setItem("user_email", user.email);
+      localStorage.setItem("user_phone", user.phone);
 
       navigate("/dashboard");
     }

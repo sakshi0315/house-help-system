@@ -51,7 +51,11 @@ def login_user(
         }
 
     return {
-        "message": "Login Successful",
-        "user_id": db_user.id,
-        "name": db_user.name
+    "message": "Login Successful",
+    "user": {
+        "id": db_user.id,
+        "name": db_user.name,
+        "email": db_user.email,
+        "phone": db_user.phone
     }
+}

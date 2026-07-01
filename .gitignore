@@ -22,3 +22,38 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# ======================
+# Node
+# ======================
+node_modules/
+dist/
+
+# ======================
+# Python
+# ======================
+venv/
+backend/venv/
+
+__pycache__/
+*.py[cod]
+*.pyo
+
+# ======================
+# Environment Variables
+# ======================
+.env
+*.env
+backend/.env
+
+# ======================
+# VS Code
+# ======================
+.vscode/
+
+# ======================
+# OS Files
+# ======================
+.DS_Store
+Thumbs.db

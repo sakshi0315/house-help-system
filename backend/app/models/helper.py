@@ -5,8 +5,17 @@ class Helper(Base):
     __tablename__ = "helpers"
 
     id = Column(Integer, primary_key=True, index=True)
+
     name = Column(String)
+
     skill = Column(String)
+
     rating = Column(Float)
+
     cost = Column(Integer)
+
     available = Column(Boolean, default=True)
+
+    latitude = Column(Float)
+
+    longitude = Column(Float)

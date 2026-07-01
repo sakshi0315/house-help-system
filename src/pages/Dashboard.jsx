@@ -17,7 +17,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 function Dashboard() {
-
+  const userName = localStorage.getItem("user_name") || "Guest";
   const services = [
     {
       title: "Cleaning",
@@ -65,25 +65,50 @@ function Dashboard() {
           <div>
 
             <h1 className="text-3xl font-bold">
-              Welcome Shivam 👋
+              Welcome {userName} 👋
             </h1>
 
             <div className="flex items-center gap-2 text-gray-500 mt-2">
               <MapPin size={16}/>
-              Ahmedabad, India
+                India
             </div>
 
           </div>
 
           <div className="flex gap-4">
 
-            <button className="p-3 bg-white rounded-xl shadow">
-              <Bell />
-            </button>
+            <Link to="/notifications">
+              <button
+                className="
+                p-3
+                bg-white
+                rounded-xl
+                shadow
+                hover:bg-blue-50
+                hover:text-blue-600
+                transition-all
+                duration-300
+                "
+              >
+                <Bell />
+              </button>
+            </Link>
 
-            <button className="p-3 bg-white rounded-xl shadow">
+            <Link to="/profile">
+            <button
+              className="
+              p-3
+              bg-white
+              rounded-xl
+              shadow
+              hover:bg-blue-50
+              hover:text-blue-600
+              transition-all
+              "
+            >
               <User />
             </button>
+          </Link>          
 
           </div>
 
@@ -114,19 +139,24 @@ function Dashboard() {
             Book trusted professionals in seconds.
           </p>
 
-          <button
-            className="
-            mt-8
-            px-8
-            py-4
-            bg-white
-            text-black
-            rounded-2xl
-            font-semibold
-            "
-          >
-            Book Service
-          </button>
+          <Link to="/booking">
+  <button
+    className="
+    mt-8
+    px-8
+    py-4
+    bg-white
+    text-black
+    rounded-2xl
+    font-semibold
+    hover:bg-gray-100
+    transition-all
+    duration-300
+    "
+  >
+    Book Service
+  </button>
+</Link>
 
         </div>
 

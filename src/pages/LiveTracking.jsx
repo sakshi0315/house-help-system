@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import MapView from "../components/MapView";
 import {
   Phone,
   MessageCircle,
@@ -9,7 +10,69 @@ import {
 } from "lucide-react";
 
 function LiveTracking() {
+
+  const [eta, setEta] = useState(12);
+  const [distance, setDistance] = useState(1.8);
+  const [status, setStatus] = useState("On The Way");
+
+  useEffect(() => {
+
+    const timer = setInterval(() => {
+
+      setEta((prev) => {
+
+        if (prev > 1)
+          return prev - 1;
+
+        return 0;
+
+      });
+
+      setDistance((prev) => {
+
+        if (prev > 0.2)
+          return Number((prev - 0.2).toFixed(1));
+
+        return 0;
+
+      });
+
+    }, 5000);
+
+    return () => clearInterval(timer);
+
+  }, []);
+
+  useEffect(() => {
+
+    if (distance > 1.2) {
+
+      setStatus("On The Way");
+
+    }
+
+    else if (distance > 0.5) {
+
+      setStatus("Near You");
+
+    }
+
+    else if (distance > 0) {
+
+      setStatus("Arrived");
+
+    }
+
+    else {
+
+      setStatus("Service Started");
+
+    }
+
+  }, [distance]);
+
   return (
+
     <div className="min-h-screen bg-slate-50">
 
       {/* Header */}
@@ -30,119 +93,10 @@ function LiveTracking() {
 
       </div>
 
-      {/* Map Section */}
+      {/* Map */}
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-
-        <div
-          className="
-          relative
-          h-[500px]
-          rounded-[32px]
-          overflow-hidden
-          shadow-xl
-          bg-gradient-to-br
-          from-blue-100
-          via-white
-          to-teal-100
-          "
-        >
-
-          {/* Grid */}
-
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{
-              backgroundImage:
-                "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)",
-              backgroundSize: "40px 40px",
-            }}
-          />
-
-          {/* User Location */}
-
-          <motion.div
-            animate={{
-              scale: [1, 1.15, 1],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 2,
-            }}
-            className="
-            absolute
-            bottom-[25%]
-            left-[70%]
-            "
-          >
-            <div
-              className="
-              w-16
-              h-16
-              rounded-full
-              bg-green-500
-              flex
-              items-center
-              justify-center
-              text-white
-              shadow-xl
-              "
-            >
-              📍
-            </div>
-          </motion.div>
-
-          {/* Helper */}
-
-          <motion.div
-            animate={{
-              x: [0, 15, 0],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 2,
-            }}
-            className="
-            absolute
-            top-[30%]
-            left-[25%]
-            "
-          >
-            <div
-              className="
-              w-16
-              h-16
-              rounded-full
-              bg-blue-600
-              flex
-              items-center
-              justify-center
-              text-white
-              shadow-xl
-              "
-            >
-              🚴
-            </div>
-          </motion.div>
-
-          {/* Route */}
-
-          <svg
-            className="absolute inset-0 w-full h-full"
-          >
-            <line
-              x1="30%"
-              y1="35%"
-              x2="70%"
-              y2="75%"
-              stroke="#2563EB"
-              strokeWidth="6"
-              strokeDasharray="12"
-            />
-          </svg>
-
-        </div>
-
+        <MapView />
       </div>
 
       {/* ETA Card */}
@@ -170,7 +124,7 @@ function LiveTracking() {
               />
 
               <h2 className="text-3xl font-bold mt-3">
-                12 Min
+                {eta} Min
               </h2>
 
               <p className="text-gray-500">
@@ -189,7 +143,7 @@ function LiveTracking() {
               />
 
               <h2 className="text-3xl font-bold mt-3">
-                1.8 KM
+                {distance} KM
               </h2>
 
               <p className="text-gray-500">
@@ -219,11 +173,37 @@ function LiveTracking() {
 
           </div>
 
+          <div className="mt-8 text-center">
+
+            <span
+              className={`
+              px-6
+              py-3
+              rounded-full
+              text-white
+              font-semibold
+
+              ${
+                status === "On The Way"
+                  ? "bg-blue-600"
+                  : status === "Near You"
+                  ? "bg-orange-500"
+                  : status === "Arrived"
+                  ? "bg-green-600"
+                  : "bg-teal-600"
+              }
+              `}
+            >
+              {status}
+            </span>
+
+          </div>
+
         </div>
 
       </div>
 
-      {/* Bottom Sheet */}
+            {/* Bottom Sheet */}
 
       <div className="max-w-7xl mx-auto px-6 py-8">
 
@@ -263,6 +243,28 @@ function LiveTracking() {
                   Cleaning Specialist
                 </p>
 
+                <p className="text-sm text-gray-500 mt-2">
+                  📍 Current Status:
+                  <span
+                    className={`
+                    ml-2
+                    font-semibold
+
+                    ${
+                      status === "On The Way"
+                        ? "text-blue-600"
+                        : status === "Near You"
+                        ? "text-orange-500"
+                        : status === "Arrived"
+                        ? "text-green-600"
+                        : "text-teal-600"
+                    }
+                    `}
+                  >
+                    {status}
+                  </span>
+                </p>
+
               </div>
 
             </div>
@@ -280,7 +282,10 @@ function LiveTracking() {
                 text-white
                 flex
                 items-center
+                justify-center
                 gap-2
+                hover:bg-blue-700
+                transition
                 "
               >
                 <Phone size={18}/>
@@ -296,7 +301,10 @@ function LiveTracking() {
                 text-white
                 flex
                 items-center
+                justify-center
                 gap-2
+                hover:bg-teal-600
+                transition
                 "
               >
                 <MessageCircle size={18}/>
@@ -312,7 +320,10 @@ function LiveTracking() {
                 text-white
                 flex
                 items-center
+                justify-center
                 gap-2
+                hover:bg-orange-600
+                transition
                 "
               >
                 <Navigation size={18}/>
@@ -327,8 +338,137 @@ function LiveTracking() {
 
       </div>
 
+      {/* Progress Timeline */}
+
+      <div className="max-w-7xl mx-auto px-6 pb-10">
+
+        <div className="bg-white rounded-[32px] shadow-xl p-8">
+
+          <h2 className="text-2xl font-bold mb-8">
+            Booking Progress
+          </h2>
+
+          <div className="flex justify-between items-center">
+
+            <div className="text-center flex-1">
+
+              <div className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center mx-auto">
+                ✓
+              </div>
+
+              <p className="mt-3 font-medium">
+                Assigned
+              </p>
+
+            </div>
+
+            <div className="h-1 flex-1 bg-green-500"></div>
+
+            <div className="text-center flex-1">
+
+              <div
+                className={`
+                w-10
+                h-10
+                rounded-full
+                text-white
+                flex
+                items-center
+                justify-center
+                mx-auto
+
+                ${
+                  status === "On The Way" ||
+                  status === "Near You" ||
+                  status === "Arrived" ||
+                  status === "Service Started"
+                    ? "bg-blue-600"
+                    : "bg-gray-300"
+                }
+                `}
+              >
+                2
+              </div>
+
+              <p className="mt-3 font-medium">
+                On The Way
+              </p>
+
+            </div>
+
+            <div className="h-1 flex-1 bg-gray-300"></div>
+
+            <div className="text-center flex-1">
+
+              <div
+                className={`
+                w-10
+                h-10
+                rounded-full
+                text-white
+                flex
+                items-center
+                justify-center
+                mx-auto
+
+                ${
+                  status === "Arrived" ||
+                  status === "Service Started"
+                    ? "bg-orange-500"
+                    : "bg-gray-300"
+                }
+                `}
+              >
+                3
+              </div>
+
+              <p className="mt-3 font-medium">
+                Arrived
+              </p>
+
+            </div>
+
+            <div className="h-1 flex-1 bg-gray-300"></div>
+
+            <div className="text-center flex-1">
+
+              <div
+                className={`
+                w-10
+                h-10
+                rounded-full
+                text-white
+                flex
+                items-center
+                justify-center
+                mx-auto
+
+                ${
+                  status === "Service Started"
+                    ? "bg-teal-600"
+                    : "bg-gray-300"
+                }
+                `}
+              >
+                4
+              </div>
+
+              <p className="mt-3 font-medium">
+                Started
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
+
   );
+
 }
 
 export default LiveTracking;

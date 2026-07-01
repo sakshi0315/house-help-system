@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import Profile from "../pages/Profile";
 import Landing from "../pages/Landing";
 import Auth from "../pages/Auth";
 import Dashboard from "../pages/Dashboard";
@@ -74,8 +74,16 @@ function AppRoutes() {
       path="/history"
       element={<BookingHistory />}
     />
+    
+
+      {/* Profile */}
+      <Route
+        path="/profile"
+        element={<Profile />}
+      />
 
       </Routes>
+
     </BrowserRouter>
   );
 }

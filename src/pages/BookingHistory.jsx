@@ -1,47 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, RotateCcw, Eye } from "lucide-react";
 import { motion } from "framer-motion";
+import { getUserBookings } from "../api/api";
 
 function BookingHistory() {
 
   const [search, setSearch] = useState("");
+  const [bookings, setBookings] = useState([]);
 
-  const bookings = [
-    {
-      service: "Home Cleaning",
-      date: "16 June 2026",
-      cost: "₹499",
-      status: "Completed",
-    },
+  useEffect(() => {
+    loadBookings();
+  }, []);
 
-    {
-      service: "Cooking Service",
-      date: "14 June 2026",
-      cost: "₹799",
-      status: "Completed",
-    },
+  const loadBookings = async () => {
+    try {
 
-    {
-      service: "Electrician",
-      date: "10 June 2026",
-      cost: "₹699",
-      status: "Cancelled",
-    },
+      const response = await getUserBookings(1);
 
-    {
-      service: "Plumbing",
-      date: "8 June 2026",
-      cost: "₹899",
-      status: "Completed",
-    },
+      setBookings(response.data);
 
-    {
-      service: "Laundry Service",
-      date: "5 June 2026",
-      cost: "₹399",
-      status: "Pending",
-    },
-  ];
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
+  const filteredBookings = bookings.filter((booking) =>
+    booking.service.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -66,7 +53,7 @@ function BookingHistory() {
 
       <div className="max-w-7xl mx-auto px-6 py-10">
 
-        {/* Search + Filters */}
+        {/* Search */}
 
         <div
           className="
@@ -77,68 +64,30 @@ function BookingHistory() {
           "
         >
 
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="relative">
 
-            <div className="relative flex-1">
-
-              <Search
-                className="
-                absolute
-                left-4
-                top-4
-                text-gray-400
-                "
-              />
-
-              <input
-                type="text"
-                value={search}
-                onChange={(e)=>setSearch(e.target.value)}
-                placeholder="Search bookings..."
-                className="
-                w-full
-                pl-12
-                p-4
-                border
-                rounded-2xl
-                "
-              />
-
-            </div>
-
-            <button
+            <Search
               className="
-              px-6
-              py-4
-              bg-blue-600
-              text-white
+              absolute
+              left-4
+              top-4
+              text-gray-400
+              "
+            />
+
+            <input
+              type="text"
+              value={search}
+              onChange={(e)=>setSearch(e.target.value)}
+              placeholder="Search bookings..."
+              className="
+              w-full
+              pl-12
+              p-4
+              border
               rounded-2xl
               "
-            >
-              All
-            </button>
-
-            <button
-              className="
-              px-6
-              py-4
-              bg-slate-100
-              rounded-2xl
-              "
-            >
-              Completed
-            </button>
-
-            <button
-              className="
-              px-6
-              py-4
-              bg-slate-100
-              rounded-2xl
-              "
-            >
-              Pending
-            </button>
+            />
 
           </div>
 
@@ -148,13 +97,11 @@ function BookingHistory() {
 
         <div className="mt-8 space-y-6">
 
-          {bookings.map((booking,index)=>(
+          {filteredBookings.map((booking)=>(
 
             <motion.div
-              key={index}
-              whileHover={{
-                y:-5
-              }}
+              key={booking.id}
+              whileHover={{ y:-5 }}
               className="
               bg-white
               rounded-[32px]
@@ -163,25 +110,29 @@ function BookingHistory() {
               "
             >
 
-              <div className="flex flex-col lg:flex-row justify-between gap-6">
+              <div className="flex flex-col lg:flex-row justify-between gap-8">
 
-                <div>
+                <div className="space-y-2">
 
                   <h2 className="text-2xl font-bold">
                     {booking.service}
                   </h2>
 
-                  <p className="text-gray-500 mt-2">
-                    {booking.date}
+                  <p>
+                    📅 {booking.date}
                   </p>
 
-                </div>
+                  <p>
+                    🕒 {booking.time}
+                  </p>
 
-                <div>
+                  <p>
+                    📍 {booking.address}
+                  </p>
 
-                  <h3 className="text-2xl font-bold text-blue-600">
-                    {booking.cost}
-                  </h3>
+                  <p>
+                    📝 {booking.instructions || "No Instructions"}
+                  </p>
 
                 </div>
 
@@ -197,10 +148,12 @@ function BookingHistory() {
 
                     ${
                       booking.status === "Completed"
-                      ? "bg-green-100 text-green-700"
-                      : booking.status === "Pending"
-                      ? "bg-orange-100 text-orange-700"
-                      : "bg-red-100 text-red-700"
+                        ? "bg-green-100 text-green-700"
+                        : booking.status === "Pending"
+                        ? "bg-orange-100 text-orange-700"
+                        : booking.status === "Confirmed"
+                        ? "bg-blue-100 text-blue-700"
+                        : "bg-red-100 text-red-700"
                     }
                     `}
                   >

@@ -10,4 +10,7 @@ class Booking(Base):
     service = Column(String)
     date = Column(String)
     time = Column(String)
+    address = Column(String)
+    instructions = Column(String)
+
     status = Column(String)
